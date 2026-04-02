@@ -1,0 +1,39 @@
+name: remote_docker_compose
+description: "[Infra] Manage Docker Compose stacks on remote hosts via SSH: up, down, ps, logs, pull, restart. Key-based SSH authentication."
+inputSchema:
+  type: object
+  properties:
+    action:
+      type: string
+      enum: ["up", "down", "ps", "logs", "pull", "restart"]
+      description: "The compose action to perform."
+    project_dir:
+      type: string
+      description: "Path to the directory containing docker-compose.yml (required)."
+    host:
+      type: string
+      description: "Remote host in format 'user@hostname' or 'hostname' (uses current user)."
+    key:
+      type: string
+      description: "Path to SSH private key file (optional, uses ssh-agent or default keys if omitted)."
+    port:
+      type: integer
+      description: "SSH port (default: 22)."
+    service:
+      type: string
+      description: "Target a specific service within the stack (optional)."
+    tail:
+      type: integer
+      description: "Number of log lines to return (default: 100, only used with 'logs' action)."
+  required: ["action", "project_dir", "host"]
+platforms:
+  linux:
+    command: "bash"
+    args: ["./tools/remote_docker_compose/scripts/remote_docker_compose.sh"]
+  darwin:
+    command: "bash"
+    args: ["./tools/remote_docker_compose/scripts/remote_docker_compose.sh"]
+  windows:
+    command: "powershell"
+    args: ["-ExecutionPolicy", "Bypass", "-File", "./tools/remote_docker_compose/scripts/remote_docker_compose.ps1"]
+timeout: "120s"

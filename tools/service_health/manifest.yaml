@@ -1,0 +1,37 @@
+name: service_health
+description: "[Monitoring] Check service availability via ping, TCP port check, or HTTP health endpoint. Useful for monitoring homelab services."
+inputSchema:
+  type: object
+  properties:
+    check:
+      type: string
+      enum: ["ping", "port", "http"]
+      description: "Type of health check to perform."
+    target:
+      type: string
+      description: "Hostname or IP address to check."
+    port:
+      type: integer
+      description: "TCP port number (required for 'port' check, optional for 'http' to override default 80/443)."
+    path:
+      type: string
+      description: "URL path for HTTP check (default: '/'). Only used with 'http' check."
+    scheme:
+      type: string
+      enum: ["http", "https"]
+      description: "HTTP scheme (default: 'http'). Only used with 'http' check."
+    timeout:
+      type: integer
+      description: "Timeout in seconds (default: 5)."
+  required: ["check", "target"]
+platforms:
+  linux:
+    command: "bash"
+    args: ["./tools/service_health/scripts/service_health.sh"]
+  darwin:
+    command: "bash"
+    args: ["./tools/service_health/scripts/service_health.sh"]
+  windows:
+    command: "powershell"
+    args: ["-ExecutionPolicy", "Bypass", "-File", "./tools/service_health/scripts/service_health.ps1"]
+timeout: "15s"

@@ -1,0 +1,30 @@
+name: docker_images
+description: "[Infra] Manage Docker images: list, pull, remove, and prune unused images. Supports local and remote Docker hosts."
+inputSchema:
+  type: object
+  properties:
+    action:
+      type: string
+      enum: ["list", "pull", "remove", "prune"]
+      description: "The image action to perform."
+    image:
+      type: string
+      description: "Image name with optional tag (e.g. 'nginx:latest'). Required for 'pull' and 'remove'."
+    host:
+      type: string
+      description: "Remote Docker host (e.g. 'ssh://user@server'). Omit for local Docker."
+    all:
+      type: boolean
+      description: "For 'list': include intermediate images. For 'prune': remove all unused images, not just dangling."
+  required: ["action"]
+platforms:
+  linux:
+    command: "bash"
+    args: ["./tools/docker_images/scripts/docker_images.sh"]
+  darwin:
+    command: "bash"
+    args: ["./tools/docker_images/scripts/docker_images.sh"]
+  windows:
+    command: "powershell"
+    args: ["-ExecutionPolicy", "Bypass", "-File", "./tools/docker_images/scripts/docker_images.ps1"]
+timeout: "120s"

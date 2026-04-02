@@ -1,0 +1,36 @@
+name: remote_docker_images
+description: "[Infra] Manage Docker images on remote hosts via SSH: list, pull, remove, prune. Key-based SSH authentication."
+inputSchema:
+  type: object
+  properties:
+    action:
+      type: string
+      enum: ["list", "pull", "remove", "prune"]
+      description: "The image action to perform."
+    image:
+      type: string
+      description: "Image name with optional tag (e.g. 'nginx:latest'). Required for 'pull' and 'remove'."
+    host:
+      type: string
+      description: "Remote host in format 'user@hostname' or 'hostname' (uses current user)."
+    key:
+      type: string
+      description: "Path to SSH private key file (optional, uses ssh-agent or default keys if omitted)."
+    port:
+      type: integer
+      description: "SSH port (default: 22)."
+    all:
+      type: boolean
+      description: "For 'list': include intermediate images. For 'prune': remove all unused images, not just dangling."
+  required: ["action", "host"]
+platforms:
+  linux:
+    command: "bash"
+    args: ["./tools/remote_docker_images/scripts/remote_docker_images.sh"]
+  darwin:
+    command: "bash"
+    args: ["./tools/remote_docker_images/scripts/remote_docker_images.sh"]
+  windows:
+    command: "powershell"
+    args: ["-ExecutionPolicy", "Bypass", "-File", "./tools/remote_docker_images/scripts/remote_docker_images.ps1"]
+timeout: "120s"

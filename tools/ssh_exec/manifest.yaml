@@ -1,0 +1,29 @@
+name: ssh_exec
+description: "[Infra] Execute commands on remote hosts via SSH. Uses key-based authentication. The escape hatch for any remote operation."
+inputSchema:
+  type: object
+  properties:
+    host:
+      type: string
+      description: "Remote host in format 'user@hostname' or just 'hostname' (uses current user)."
+    command:
+      type: string
+      description: "The command to execute on the remote host."
+    key:
+      type: string
+      description: "Path to SSH private key file (optional, uses ssh-agent or default keys if omitted)."
+    port:
+      type: integer
+      description: "SSH port (default: 22)."
+  required: ["host", "command"]
+platforms:
+  linux:
+    command: "bash"
+    args: ["./tools/ssh_exec/scripts/ssh_exec.sh"]
+  darwin:
+    command: "bash"
+    args: ["./tools/ssh_exec/scripts/ssh_exec.sh"]
+  windows:
+    command: "powershell"
+    args: ["-ExecutionPolicy", "Bypass", "-File", "./tools/ssh_exec/scripts/ssh_exec.ps1"]
+timeout: "30s"

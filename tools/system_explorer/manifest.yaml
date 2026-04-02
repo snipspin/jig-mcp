@@ -1,0 +1,35 @@
+name: system_explorer
+description: "[Files] Advanced file system operations: read, write, list, search, log tailing. Path sandboxing for security."
+inputSchema:
+  type: object
+  properties:
+    operation:
+      type: string
+      enum: ["read_file", "write_file", "list_dir", "search_files", "read_log"]
+      description: "The file system operation to perform."
+    path:
+      type: string
+      description: "Target file or directory path. Must be within an allowed base directory."
+    content:
+      type: string
+      description: "Content to write for 'write_file' operation."
+    pattern:
+      type: string
+      description: "Search pattern (glob or regex) for 'search_files' operation."
+    root:
+      type: string
+      description: "Root directory for 'search_files' operation."
+    lines:
+      type: integer
+      description: "Number of lines to read for 'read_log' operation."
+  required: ["operation"]
+platforms:
+  windows:
+    command: "powershell"
+    args: ["-ExecutionPolicy", "Bypass", "-File", "./tools/system_explorer/scripts/explorer.ps1"]
+  linux:
+    command: "bash"
+    args: ["./tools/system_explorer/scripts/explorer.sh"]
+  darwin:
+    command: "bash"
+    args: ["./tools/system_explorer/scripts/explorer.sh"]

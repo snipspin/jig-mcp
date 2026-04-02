@@ -1,0 +1,34 @@
+name: api_bridge
+description: "[Web] Make a generic HTTP/REST request (GET, POST, PUT, DELETE) to any URL. Supports Basic Auth and Bearer tokens via manifest-level environment variables."
+inputSchema:
+  type: object
+  properties:
+    url:
+      type: string
+      description: "The full destination URL"
+    method:
+      type: string
+      enum: [GET, POST, PUT, DELETE]
+      default: GET
+    headers:
+      type: object
+      description: "Optional HTTP headers (e.g. {'Content-Type': 'application/json'})"
+    body:
+      type: string
+      description: "Optional request body (can be string or JSON object)"
+  required: [url]
+# SSRF Protection: allowedURLPrefixes restricts which URLs the bridge can reach.
+# This prevents the LLM from probing internal services (localhost, 192.168.x.x, etc.).
+# Always restrict to the specific external APIs your tool actually needs.
+#
+# Examples for common use cases:
+#   allowedURLPrefixes:
+#     - "https://api.github.com"           # GitHub API only
+#     - "https://api.openweathermap.org"   # Weather API only
+#     - "http://192.168.1.100:8080/api"    # Local homelab service (if truly needed)
+http:
+  # Replace with the actual API your tool needs to access.
+  # This example allows only requests to api.example.com.
+  allowedURLPrefixes:
+    - "https://api.example.com"
+timeout: 15s

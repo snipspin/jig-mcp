@@ -1,0 +1,20 @@
+name: terminal
+description: "[Shell] Execute authorized shell commands. Requires explicit enablement and command allowlisting in the manifest."
+inputSchema:
+  type: object
+  properties:
+    command:
+      type: string
+      description: "The shell command to execute"
+  required: [command]
+terminal:
+  enabled: true
+  allowlist:
+    - "echo"
+    - "git status"
+    - "dir"
+    - "ls"
+    - "whoami"
+    - "go version"
+  maxOutputSize: 102400
+timeout: 30s

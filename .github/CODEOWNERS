@@ -1,0 +1,19 @@
+# Code owners for jig-mcp
+# https://help.github.com/articles/about-codeowners/
+
+# Default owner for all files
+* @snipspin
+
+# Core server components
+/internal/server/ @snipspin
+/internal/sse/ @snipspin
+/internal/auth/ @snipspin
+
+# Tool implementations
+/internal/tools/ @snipspin
+/tools/ @snipspin
+
+# Configuration and CI
+/.github/ @snipspin
+/Makefile @snipspin
+/go.mod @snipspin

@@ -1,0 +1,29 @@
+# Compiled binaries
+/jig-mcp
+/jig
+/main
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.log
+
+# Test output and coverage
+*.out
+*_cover.html
+
+# Audit logs (generated at runtime)
+logs/
+*.jsonl
+
+# Environment
+.env
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Claude Code local config
+.claude/

@@ -1,0 +1,20 @@
+name: hello
+description: "[Example] Returns a greeting message. Example tool for testing and learning jig-mcp tool development."
+inputSchema:
+  type: object
+  properties:
+    name:
+      type: string
+      description: "Name to greet (default: World)"
+  required: []
+platforms:
+  linux:
+    command: "bash"
+    args: ["./tools/hello/scripts/hello.sh"]
+  darwin:
+    command: "bash"
+    args: ["./tools/hello/scripts/hello.sh"]
+  windows:
+    command: "powershell"
+    args: ["-ExecutionPolicy", "Bypass", "-File", "./tools/hello/scripts/hello.ps1"]
+timeout: "5s"

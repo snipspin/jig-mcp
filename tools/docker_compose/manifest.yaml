@@ -1,0 +1,33 @@
+name: docker_compose
+description: "[Infra] Manage Docker Compose stacks: up, down, ps, logs, pull, restart. Supports local and remote Docker hosts."
+inputSchema:
+  type: object
+  properties:
+    action:
+      type: string
+      enum: ["up", "down", "ps", "logs", "pull", "restart"]
+      description: "The compose action to perform."
+    project_dir:
+      type: string
+      description: "Path to the directory containing docker-compose.yml (required)."
+    host:
+      type: string
+      description: "Remote Docker host (e.g. 'ssh://user@server'). Omit for local Docker."
+    service:
+      type: string
+      description: "Target a specific service within the stack (optional)."
+    tail:
+      type: integer
+      description: "Number of log lines to return (default: 100, only used with 'logs' action)."
+  required: ["action", "project_dir"]
+platforms:
+  linux:
+    command: "bash"
+    args: ["./tools/docker_compose/scripts/docker_compose.sh"]
+  darwin:
+    command: "bash"
+    args: ["./tools/docker_compose/scripts/docker_compose.sh"]
+  windows:
+    command: "powershell"
+    args: ["-ExecutionPolicy", "Bypass", "-File", "./tools/docker_compose/scripts/docker_compose.ps1"]
+timeout: "120s"

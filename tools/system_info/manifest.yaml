@@ -1,0 +1,15 @@
+name: system_info
+description: "[Monitoring] Provides basic OS and hardware information (hostname, OS, CPU, memory)"
+inputSchema:
+  type: object
+  properties: {}
+platforms:
+  windows:
+    command: "powershell"
+    args: ["-ExecutionPolicy", "Bypass", "-File", "./scripts/sys_info.ps1"]
+  linux:
+    command: "bash"
+    args: ["./scripts/sys_info.sh"]
+  darwin:
+    command: "bash"
+    args: ["./scripts/sys_info.sh"]

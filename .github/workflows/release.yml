@@ -1,0 +1,116 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - os: linux
+            arch: amd64
+          - os: linux
+            arch: arm64
+          - os: darwin
+            arch: amd64
+          - os: darwin
+            arch: arm64
+          - os: windows
+            arch: amd64
+          - os: windows
+            arch: arm64
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Build binary
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          BINARY_NAME="jig-mcp"
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            BINARY_NAME="jig-mcp.exe"
+          fi
+          mkdir -p bin
+          go build -ldflags "-X main.Version=${VERSION}" -o "bin/${BINARY_NAME}" ./cmd/jig-mcp/
+
+      - name: Package archive
+        run: |
+          ARCHIVE_DIR="jig-mcp-${{ matrix.os }}-${{ matrix.arch }}"
+          mkdir -p "${ARCHIVE_DIR}"
+
+          # Binary (from bin/ subdirectory)
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            cp bin/jig-mcp.exe "${ARCHIVE_DIR}/bin/"
+          else
+            cp bin/jig-mcp "${ARCHIVE_DIR}/bin/"
+          fi
+
+          # Example tools (exclude test-only tools)
+          cp -r tools "${ARCHIVE_DIR}/tools"
+
+          # User-facing scripts only (exclude test helpers and build sources)
+          mkdir -p "${ARCHIVE_DIR}/scripts"
+          for f in scripts/sys_info.sh scripts/sys_info.ps1; do
+            [ -f "$f" ] && cp "$f" "${ARCHIVE_DIR}/scripts/"
+          done
+
+          # Config and docs
+          cp example.env "${ARCHIVE_DIR}/.env"
+          cp -r docs "${ARCHIVE_DIR}/docs"
+          cp README.md "${ARCHIVE_DIR}/"
+          cp LICENSE "${ARCHIVE_DIR}/"
+
+          # Platform-appropriate installer
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            cp packaging/install.ps1 "${ARCHIVE_DIR}/"
+            zip -r "${ARCHIVE_DIR}.zip" "${ARCHIVE_DIR}"
+          else
+            cp packaging/install.sh "${ARCHIVE_DIR}/"
+            chmod +x "${ARCHIVE_DIR}/install.sh"
+            tar czf "${ARCHIVE_DIR}.tar.gz" "${ARCHIVE_DIR}"
+          fi
+
+      - name: Upload archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: jig-mcp-${{ matrix.os }}-${{ matrix.arch }}
+          path: jig-mcp-${{ matrix.os }}-${{ matrix.arch }}${{ matrix.os == 'windows' && '.zip' || '.tar.gz' }}
+          if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: jig-mcp-*
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: sha256sum jig-mcp-*.tar.gz jig-mcp-*.zip > checksums.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            jig-mcp-*.tar.gz
+            jig-mcp-*.zip
+            checksums.txt
+          generate_release_notes: true

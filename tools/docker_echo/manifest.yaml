@@ -1,0 +1,18 @@
+name: docker_echo
+description: "[Infra] Docker connectivity check — runs echo inside an Alpine container. Verifies Docker daemon is working."
+inputSchema:
+    type: object
+    properties: {}
+platforms:
+    windows:
+        command: "echo"
+        args: ["hello from alpine sandbox"]
+    linux:
+        command: "echo"
+        args: ["hello from alpine sandbox"]
+    darwin:
+        command: "echo"
+        args: ["hello from alpine sandbox"]
+sandbox:
+    type: docker
+    image: alpine:latest

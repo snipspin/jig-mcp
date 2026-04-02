@@ -1,0 +1,39 @@
+name: remote_docker_containers
+description: "[Infra] Manage Docker containers on remote hosts via SSH: list, start, stop, restart, view logs, inspect. Key-based SSH authentication."
+inputSchema:
+  type: object
+  properties:
+    action:
+      type: string
+      enum: ["list", "start", "stop", "restart", "logs", "inspect", "remove"]
+      description: "The container action to perform."
+    container:
+      type: string
+      description: "Container name or ID (required for all actions except 'list')."
+    host:
+      type: string
+      description: "Remote host in format 'user@hostname' or 'hostname' (uses current user)."
+    key:
+      type: string
+      description: "Path to SSH private key file (optional, uses ssh-agent or default keys if omitted)."
+    port:
+      type: integer
+      description: "SSH port (default: 22)."
+    tail:
+      type: integer
+      description: "Number of log lines to return (default: 100, only used with 'logs' action)."
+    all:
+      type: boolean
+      description: "Include stopped containers when listing (default: false)."
+  required: ["action", "host"]
+platforms:
+  linux:
+    command: "bash"
+    args: ["./tools/remote_docker_containers/scripts/remote_docker_containers.sh"]
+  darwin:
+    command: "bash"
+    args: ["./tools/remote_docker_containers/scripts/remote_docker_containers.sh"]
+  windows:
+    command: "powershell"
+    args: ["-ExecutionPolicy", "Bypass", "-File", "./tools/remote_docker_containers/scripts/remote_docker_containers.ps1"]
+timeout: "60s"

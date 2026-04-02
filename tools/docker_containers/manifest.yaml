@@ -1,0 +1,33 @@
+name: docker_containers
+description: "[Infra] Manage Docker containers: list, start, stop, restart, view logs, and inspect. Supports local and remote Docker hosts."
+inputSchema:
+  type: object
+  properties:
+    action:
+      type: string
+      enum: ["list", "start", "stop", "restart", "logs", "inspect", "remove"]
+      description: "The container action to perform."
+    container:
+      type: string
+      description: "Container name or ID (required for all actions except 'list')."
+    host:
+      type: string
+      description: "Remote Docker host (e.g. 'ssh://user@server'). Omit for local Docker."
+    tail:
+      type: integer
+      description: "Number of log lines to return (default: 100, only used with 'logs' action)."
+    all:
+      type: boolean
+      description: "Include stopped containers when listing (default: false)."
+  required: ["action"]
+platforms:
+  linux:
+    command: "bash"
+    args: ["./tools/docker_containers/scripts/docker_containers.sh"]
+  darwin:
+    command: "bash"
+    args: ["./tools/docker_containers/scripts/docker_containers.sh"]
+  windows:
+    command: "powershell"
+    args: ["-ExecutionPolicy", "Bypass", "-File", "./tools/docker_containers/scripts/docker_containers.ps1"]
+timeout: "30s"

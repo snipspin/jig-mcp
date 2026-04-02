@@ -1,0 +1,41 @@
+name: web_search
+description: "[Web] Search the web via configurable search endpoint (SearXNG, Ollama, or any compatible API)"
+inputSchema:
+  type: object
+  properties:
+    q:
+      type: string
+      description: "Search query"
+    query:
+      type: string
+      description: "Search query (alias for 'q')"
+    max_results:
+      type: integer
+      description: "Maximum number of results to return"
+    categories:
+      type: string
+      description: "Comma-separated categories (SearXNG: 'general,news,tech')"
+    language:
+      type: string
+      description: "Language code (e.g., 'en', 'de')"
+    time_range:
+      type: string
+      description: "Time filter: day, week, month, year"
+    page:
+      type: integer
+      description: "Page number for pagination"
+    safesearch:
+      type: integer
+      description: "Safe search level: 0=off, 1=moderate, 2=strict"
+  required: []
+http:
+  url: "${SEARCH_ENDPOINT}"
+  method: "${SEARCH_METHOD}"
+  headers:
+    Content-Type: "${SEARCH_CONTENT_TYPE}"
+    Authorization: "Bearer ${SEARCH_API_KEY}"
+  queryParams:
+    format: "${SEARCH_FORMAT}"
+  allowedURLPrefixes:
+    - "${SEARCH_ALLOWED_PREFIXES}"
+timeout: "30s"
