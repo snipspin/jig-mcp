@@ -4,6 +4,14 @@ All notable changes to jig-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.1.1] - 2026-04-02
+
+Fix release for v0.1.0 packaging issue.
+
+### Fixed
+
+- Release workflow: create `bin/` subdirectory in release archives
+
 ## [0.1.0] - 2026-03-31
 
 Initial public release of jig-mcp.
@@ -86,4 +94,5 @@ Initial public release of jig-mcp.
 - Go version: 1.25.5
 - Dependencies: `gopkg.in/yaml.v3` (YAML parsing)
 
+[0.1.1]: https://github.com/snipspin/jig-mcp/releases/tag/v0.1.1
 [0.1.0]: https://github.com/snipspin/jig-mcp/releases/tag/v0.1.0
