@@ -50,7 +50,7 @@ jobs:
       - name: Package archive
         run: |
           ARCHIVE_DIR="jig-mcp-${{ matrix.os }}-${{ matrix.arch }}"
-          mkdir -p "${ARCHIVE_DIR}"
+          mkdir -p "${ARCHIVE_DIR}/bin"
 
           # Binary (from bin/ subdirectory)
           if [ "${{ matrix.os }}" = "windows" ]; then
